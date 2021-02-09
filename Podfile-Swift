@@ -6,7 +6,7 @@ inhibit_all_warnings!
 
 def testing_pods
   pod 'Nimble', '~> 9.0.0'
-  pod 'Quick', '~> 3.1.1'
+  pod 'Quick'
   pod 'XcodeCoverage', '~> 1.4.0'
 end
 
@@ -61,7 +61,7 @@ def widgets_pods
 end
 
 def tools_pods
-  pod 'CocoaLumberjack', '~> 3.7.0'
+  pod 'CocoaLumberjack/Swift', '~> 3.7.0'
   pod 'DoraemonKit/Core', '~> 3.0.6', :configurations => ['Debug']
   #pod 'XCGLogger', '~> 7.0.1', :configurations => ['Debug']
   #pod 'Log', '~> 2.0'
