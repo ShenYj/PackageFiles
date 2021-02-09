@@ -1,0 +1,136 @@
+# Uncomment the next line to define a global platform for your project
+source 'https://cdn.cocoapods.org/'
+
+platform :ios, '11.0'
+inhibit_all_warnings!
+
+def testing_pods
+  pod 'Nimble', '~> 9.0.0'
+  pod 'Quick', '~> 3.1.1'
+  pod 'XcodeCoverage', '~> 1.4.0'
+end
+
+def libs_pods
+  pod 'SnapKit', '~> 5.0.1'
+  pod 'SwiftyFitsize', '~> 1.1.0'
+  pod 'Alamofire', '~> 5.4.1'
+  pod 'Moya', '~> 14.0.0'
+  pod 'SwiftyJSON', '~> 5.0.0'
+  pod 'ObjectMapper', '~> 4.2.0'
+  pod 'IQKeyboardManagerSwift', '~> 6.5.6'
+  pod 'R.swift', '~> 5.3.1'
+  pod 'SwifterSwift', '~> 5.2.0'
+  pod 'SwiftyUserDefaults', '~> 5.1.0'
+  pod 'Hue', '~> 5.0.0'
+  pod 'SwiftDate', '~> 6.3.1'
+  pod 'CryptoSwift', '~> 1.3.8'
+  pod 'YiUUID', '~> 0.0.2'
+  pod 'DeviceKit', '~> 4.2.1'
+  pod 'Dollar', '~> 9.0.0'
+  pod 'SQLite.swift', '~> 0.12.2'
+  pod 'ReachabilitySwift', '~> 5.0.0'
+  pod 'Then', '~> 2.7.0'
+  #pod 'FCUUID', '~> 1.3.1'
+  #pod 'AlamofireNetworkActivityIndicator', '~> 3.1.0'
+  #pod 'MMCodable', '~> 0.0.2'
+end
+
+def widgets_pods
+  pod 'WebViewJavascriptBridge', '~> 6.0.3'
+  pod 'FSPagerView', '~> 0.8.3'
+  pod 'Kingfisher', '~> 6.1.0'
+  pod 'ESPullToRefresh', '~> 2.9.3'
+  pod 'EmptyDataSet-Swift', '~> 5.0.0'
+  pod 'SkeletonView', :git => 'https://github.com/Juanpe/SkeletonView.git', :tag => '1.12.1'
+  pod 'SwiftEntryKit', '~> 1.2.6'
+  pod 'NVActivityIndicatorView', :git => 'https://github.com/ninjaprox/NVActivityIndicatorView.git', :tag => '5.1.1'
+  pod 'SVProgressHUD', '~> 2.2.5'
+  pod 'BetterSegmentedControl', :git => 'https://github.com/gmarm/BetterSegmentedControl.git', :tag => '2.0.1'
+  pod 'SwiftMessages', '~> 9.0.0'
+  pod 'Toaster', '~> 2.3.0'
+  #pod "dsBridge"
+  #pod 'ActiveLabel', '~> 1.1.0'
+  #pod 'NVActivityIndicatorView', :git => 'https://github.com/ninjaprox/NVActivityIndicatorView.git', :tag => '5.1.1'
+  #pod 'WCLShineButton', '~> 1.0.8'
+  #pod 'BulletinBoard', '~> 4.1.2'
+  #pod 'Toast-Swift', '~> 5.0.1'
+  #pod 'ViewAnimator', '~> 3.0.1'
+  #pod 'RAMAnimatedTabBarController', '~> 5.2.0'
+  #pod 'Material', '~> 3.1.8'
+  #pod 'LTMorphingLabel', '~> 0.9.2'
+end
+
+def tools_pods
+  pod 'CocoaLumberjack', '~> 3.7.0'
+  pod 'DoraemonKit/Core', '~> 3.0.6', :configurations => ['Debug']
+  #pod 'XCGLogger', '~> 7.0.1', :configurations => ['Debug']
+  #pod 'Log', '~> 2.0'
+  #pod 'SwiftLint', '~> 0.39.2'
+  #pod 'GDPerformanceView-Swift', '~> 2.0.3'
+  #pod 'Whisper', '~> 6.0.2'
+  #pod 'Koloda', '~> 5.0'
+  #pod 'Cartography', '~> 4.0.0'
+  #pod 'CocoaSecurity', '~> 1.2.4'
+  #pod 'KYDrawerController', '~> 2.1.0'
+  #pod 'NumberMorphView', '~> 0.2.0'
+  #pod 'PeekPop', '~> 1.0'
+end
+
+target 'ProjectName' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+  # Pods for ProjectName
+  libs_pods
+  widgets_pods
+  tools_pods
+
+    target 'ProjectNameeTests' do
+      inherit! :search_paths
+      # Pods for testing
+      testing_pods
+    end
+    
+    target 'ProjectNameUITests' do
+      # Pods for testing
+    end
+end
+
+# 移除[U-I]WebView iOS 12 标记为过期, 2020.04起影响上线
+# 删除WebViewJavascriptBridge中的WebViewJavascriptBridge.h和WebViewJavascriptBridge.m文件
+pre_install do |installer|
+  dir_bridge = installer.sandbox.pod_dir('WebViewJavascriptBridge')
+  puts "#### dir_bridge ####  #{dir_bridge}"
+  Dir.foreach(dir_bridge) {|x|
+    real_path = File.join(dir_bridge, x)
+    if (!File.directory?(real_path) && File.exists?(real_path))
+      if(x == 'README.md')
+        File.delete(real_path)
+      end
+    end
+  }
+  dir_web = File.join(dir_bridge, 'WebViewJavascriptBridge')
+  puts "#### dir_web ####  #{dir_web}"
+  Dir.foreach(dir_web) {|x|
+    real_path = File.join(dir_web, x)
+    if (!File.directory?(real_path) && File.exists?(real_path))
+      if(x == 'WebViewJavascriptBridge.h' || x == 'WebViewJavascriptBridge.m')
+        File.delete(real_path)
+      end
+    end
+  }
+  
+end
+
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |configuration|
+      configuration.build_settings['SWIFT_VERSION'] = "5.3"
+      configuration.build_settings['ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES'] = 'NO'
+      configuration.build_settings['ENABLE_BITCODE'] = 'NO'
+      if ( configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 11.0 )
+        configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
+      end
+    end
+  end
+end
